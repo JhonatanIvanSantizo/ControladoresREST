@@ -1,10 +1,12 @@
 package org.adaschool.api.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class UserNotFoundException extends ResponseStatusException {
-    public UserNotFoundException(String id) {
-        super(HttpStatus.NOT_FOUND, "user with ID: " + id + " not found");
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String message) {
+        super(message);
     }
 }

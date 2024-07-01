@@ -1,10 +1,11 @@
 package org.adaschool.api.repository.product;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Product {
 
-    private final String id;
+    private String id;
 
     private String name;
 
@@ -19,38 +20,44 @@ public class Product {
     private String imageUrl;
 
     public Product() {
-        this.id = "";
+        this.id = UUID.randomUUID().toString();
         this.name = "";
         this.description = "";
         this.category = "";
-        this.tags = null;
+        this.tags = List.of();
         this.price = 0.0;
         this.imageUrl = "";
     }
 
     public Product(String id, String name, String description, String category, double price) {
-        this.id = id;
+        this.id = id != null ? id : UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.category = category;
+        this.tags = List.of();
         this.price = price;
+        this.imageUrl = "";
     }
 
     public Product(ProductDto productDto) {
-        this.id = "";
+        this.id = UUID.randomUUID().toString();
         this.name = productDto.getName();
         this.description = productDto.getDescription();
         this.category = productDto.getCategory();
-        this.tags = productDto.getTags();
+        this.tags = productDto.getTags() != null ? productDto.getTags() : List.of();
         this.price = productDto.getPrice();
         this.imageUrl = productDto.getImageUrl();
     }
 
     public String getId() {
+
         return id;
     }
-
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getName() {
+
         return name;
     }
 

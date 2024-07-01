@@ -59,11 +59,10 @@ public class ProductsControllerTest {
         String id = "511";
         when(productsService.findById(id)).thenReturn(Optional.empty());
 
-
         mockMvc.perform(get(BASE_URL + id))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProductNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"product with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
         verify(productsService, times(1)).findById(id);
 
@@ -88,8 +87,9 @@ public class ProductsControllerTest {
 
     @Test
     public void testUpdateExistingProduct() throws Exception {
-        Product Product = new Product("1", "Whole Milk", "Whole Milk 200ml", "Dairy", 15.488);
-        when(productsService.findById("1")).thenReturn(Optional.of(Product));
+        Product existingProduct = new Product("1", "Whole Milk", "Whole Milk 200ml", "Dairy", 15.488);
+        when(productsService.findById("1")).thenReturn(Optional.of(existingProduct));
+        when(productsService.update(any(Product.class), eq("1"))).thenReturn(existingProduct);
 
         String json = "{\"name\":\"Whole Milk\",\"description\":\"Whole Milk 200ml\",\"category\":\"Dairy\",\"price\":15.488}";
         mockMvc.perform(put(BASE_URL + "1")
@@ -97,7 +97,7 @@ public class ProductsControllerTest {
                         .content(json))
                 .andExpect(status().isOk());
 
-        verify(productsService, times(1)).save(Product);
+        verify(productsService, times(1)).update(any(Product.class), eq("1"));
     }
 
     @Test
@@ -110,9 +110,9 @@ public class ProductsControllerTest {
                         .content(json))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProductNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"product with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
-        verify(productsService, times(0)).save(any());
+        verify(productsService, times(0)).update(any(), eq(id));
     }
 
     @Test
@@ -137,9 +137,10 @@ public class ProductsControllerTest {
         mockMvc.perform(delete(BASE_URL + id))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProductNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"product with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
         verify(productsService, times(0)).deleteById(id);
     }
+
 
 }

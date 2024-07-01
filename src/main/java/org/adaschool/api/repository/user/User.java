@@ -3,18 +3,28 @@ package org.adaschool.api.repository.user;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class User {
 
-    private final String id;
+    private String id;
     private final Date createdAt;
     private String name;
     private String lastName;
     private String email;
     private String passwordHash;
 
+    public User() {
+        this.id = UUID.randomUUID().toString();
+        this.name = "";
+        this.lastName = "";
+        this.email = "";
+        this.passwordHash = "";
+        this.createdAt = null;
+    }
+
     public User(String id, String name, String lastName, String email, String password) {
-        this.id = id;
+        this.id = id != null ? id : UUID.randomUUID().toString();
         this.name = name;
         this.lastName = lastName;
         this.email = email;
@@ -23,7 +33,7 @@ public class User {
     }
 
     public User(UserDto userDto) {
-        this.id = null;
+        this.id = UUID.randomUUID().toString();
         this.name = userDto.getName();
         this.lastName = userDto.getLastName();
         this.email = userDto.getEmail();
@@ -34,6 +44,10 @@ public class User {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -1,10 +1,12 @@
 package org.adaschool.api.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class ProductNotFoundException extends ResponseStatusException {
-    public ProductNotFoundException(String id) {
-        super(HttpStatus.NOT_FOUND, "product with ID: " + id + " not found");
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ProductNotFoundException extends RuntimeException {
+    public ProductNotFoundException(String message) {
+        super(message);
     }
 }

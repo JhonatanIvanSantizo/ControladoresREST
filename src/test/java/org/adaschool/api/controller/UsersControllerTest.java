@@ -2,6 +2,7 @@ package org.adaschool.api.controller;
 
 import org.adaschool.api.controller.user.UsersController;
 import org.adaschool.api.exception.UserNotFoundException;
+import org.adaschool.api.repository.product.Product;
 import org.adaschool.api.repository.user.User;
 import org.adaschool.api.repository.user.UserDto;
 import org.adaschool.api.service.user.UsersService;
@@ -62,7 +63,7 @@ public class UsersControllerTest {
         mockMvc.perform(get(BASE_URL + id))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"user with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
         verify(usersService, times(1)).findById(id);
 
@@ -76,7 +77,7 @@ public class UsersControllerTest {
 
         when(usersService.save(any())).thenReturn(user);
 
-        String json = "{\"id\":\"null\",\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
+        String json = "{\"name\":\"Ada\",\"lastName\":\"Lovelace\",\"email\":\"ada@mail.com\",\"password\":\"123456789\"}";
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,6 +92,7 @@ public class UsersControllerTest {
         UserDto userDto = new UserDto("Ada", "Lovelace", "ada@mail.com", "123456789");
         User user = new User(userDto);
         when(usersService.findById("1")).thenReturn(Optional.of(user));
+        when(usersService.update(any(User.class), eq("1"))).thenReturn(user);
 
         String json = "{\"id\":\"1\",\"name\":\"Ada\",\"lastName\":\"Lovelace\"}";
         mockMvc.perform(put(BASE_URL + "1")
@@ -98,7 +100,7 @@ public class UsersControllerTest {
                         .content(json))
                 .andExpect(status().isOk());
 
-        verify(usersService, times(1)).save(user);
+        verify(usersService, times(1)).update(any(User.class), eq("1"));
     }
 
     @Test
@@ -111,7 +113,7 @@ public class UsersControllerTest {
                         .content(json))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"user with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
         verify(usersService, times(0)).save(any());
     }
@@ -139,7 +141,7 @@ public class UsersControllerTest {
         mockMvc.perform(delete(BASE_URL + id))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"user with ID: " + id + " not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("Product not found", result.getResolvedException().getMessage()));
 
         verify(usersService, times(0)).deleteById(id);
     }
